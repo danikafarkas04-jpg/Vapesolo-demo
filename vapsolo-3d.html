@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VapSolo – Premium 80000 Puffs</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05000f;
+  --surface:rgba(255,255,255,0.045);
+  --border:rgba(255,255,255,0.09);
+  --pink:#ff2d78;--cyan:#00f0ff;--purple:#b84dff;--gold:#ffd700;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:#fff;font-family:'Outfit',sans-serif;overflow-x:hidden;}
+
+#heroCanvas{position:fixed;top:0;left:0;width:100%;height:100vh;z-index:0;pointer-events:none;}
+.grain{position:fixed;inset:0;z-index:1;opacity:.025;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;height:62px;
+  background:transparent;border-bottom:1px solid transparent;
+  transition:background .4s,border-color .4s,backdrop-filter .4s;}
+nav.scrolled{background:rgba(5,0,15,.92);backdrop-filter:blur(22px);border-bottom-color:var(--border);}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:2px;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-links{display:none;list-style:none;}
+.nav-links a{display:block;padding:0 14px;color:rgba(255,255,255,.65);
+  text-decoration:none;font-size:.78rem;letter-spacing:1.5px;text-transform:uppercase;
+  font-weight:600;line-height:62px;transition:color .2s;}
+.nav-links a:hover{color:#fff;}
+.nav-buy-d{display:none;padding:9px 22px;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  border:none;border-radius:50px;color:#fff;font-family:'Outfit',sans-serif;
+  font-weight:700;font-size:.8rem;cursor:pointer;
+  box-shadow:0 0 20px rgba(255,45,120,.35);transition:all .3s;}
+.nav-buy-d:active{transform:scale(.97);}
+.hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;
+  padding:10px 0 10px 10px;background:none;border:none;}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:.3s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{position:fixed;top:62px;left:0;right:0;z-index:299;
+  background:rgba(5,0,15,.97);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);max-height:0;overflow:hidden;transition:max-height .4s ease;}
+.mobile-menu.open{max-height:280px;}
+.mobile-menu a{display:block;padding:15px 5%;color:rgba(255,255,255,.7);
+  text-decoration:none;font-size:.95rem;font-weight:600;letter-spacing:1px;
+  border-bottom:1px solid var(--border);transition:color .2s,background .2s;}
+.mobile-menu a:last-child{border-bottom:none;}
+.mobile-menu a:active{background:rgba(255,255,255,.05);color:#fff;}
+@media(min-width:768px){
+  .nav-links{display:flex;}.nav-buy-d{display:block;}.hamburger{display:none;}
+  nav,.mobile-menu{height:70px;}.mobile-menu{top:70px;}
+  .nav-links a{line-height:70px;}}
+
+/* HERO */
+.hero{position:relative;z-index:10;min-height:100svh;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding:80px 4% 36px;text-align:center;overflow:hidden;}
+
+/* HERO STAGE */
+.hero-stage{position:absolute;inset:0;top:62px;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;perspective:1000px;overflow:hidden;}
+.hd-wrap{position:absolute;transform-style:preserve-3d;
+  animation:hFloat var(--hfd,4s) ease-in-out infinite var(--hfdd,0s);
+  cursor:pointer;pointer-events:auto;transition:opacity .6s;}
+@keyframes hFloat{
+  0%,100%{transform:var(--hbase,rotateY(0deg)) translateY(0px);}
+  50%{transform:var(--hbase,rotateY(0deg)) translateY(-20px);}}
+.hd{position:relative;transform-style:preserve-3d;
+  transition:transform .5s cubic-bezier(.34,1.4,.64,1);}
+.hd-wrap:hover .hd,.hd-wrap:active .hd{
+  transform:rotateY(25deg) rotateX(-4deg) translateY(-12px) scale(1.07)!important;}
+/* faces */
+.hf{position:absolute;border-radius:15px;backface-visibility:hidden;
+  border:1px solid rgba(255,255,255,.18);}
+.hf-front{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:12px 8px;}
+.hf-side{filter:brightness(.5);border-radius:0 15px 15px 0;}
+.hf-top{filter:brightness(.38);}
+.h-nozzle{position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  width:22px;height:17px;border-radius:6px 6px 3px 3px;z-index:2;}
+.h-badge{position:absolute;top:9px;right:6px;background:rgba(0,0,0,.6);
+  border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:2px 7px;
+  font-size:.44rem;font-weight:700;color:rgba(255,255,255,.85);}
+.h-logo{font-family:'Bebas Neue',sans-serif;font-size:.82rem;letter-spacing:3px;
+  color:rgba(255,255,255,.6);writing-mode:vertical-rl;text-orientation:mixed;
+  position:absolute;left:7px;top:50%;transform:translateY(-50%) rotate(180deg);}
+.h-flavor{font-size:.6rem;font-weight:700;text-align:center;color:#fff;
+  line-height:1.2;max-width:72px;}
+.h-leds{display:flex;gap:3px;margin-top:5px;}
+.h-led{width:5px;height:5px;border-radius:50%;animation:ledB 1.8s ease-in-out infinite;}
+.h-led:nth-child(2){animation-delay:.3s;}
+.h-led:nth-child(3){opacity:.25!important;}
+@keyframes ledB{0%,100%{opacity:1;}50%{opacity:.1;}}
+.h-shadow{position:absolute;bottom:-8px;left:0;border-radius:50%;
+  background:radial-gradient(ellipse,var(--sc,rgba(0,240,255,.3)) 0%,transparent 70%);}
+
+/* HERO TEXT */
+.hero-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;}
+.hero-content::before{content:'';position:absolute;bottom:-28px;left:50%;
+  transform:translateX(-50%);width:120%;height:200px;
+  background:radial-gradient(ellipse 80% 100% at 50% 100%,rgba(5,0,15,.9) 0%,transparent 100%);
+  pointer-events:none;z-index:-1;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;
+  padding:6px 18px;background:rgba(0,240,255,.08);border:1px solid rgba(0,240,255,.3);
+  border-radius:50px;font-size:.7rem;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--cyan);font-weight:600;margin-bottom:.9rem;animation:fadeUp .7s ease both;}
+.pdot{width:6px;height:6px;background:var(--cyan);border-radius:50%;
+  animation:pdotA 1.5s infinite;}
+@keyframes pdotA{0%,100%{box-shadow:0 0 0 0 rgba(0,240,255,.7);}50%{box-shadow:0 0 0 5px rgba(0,240,255,0);}}
+.hero-title{font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3.2rem,15vw,8rem);line-height:.88;animation:fadeUp .7s .08s ease both;}
+.t1{display:block;background:linear-gradient(90deg,#fff 30%,rgba(255,255,255,.6));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.t2{display:block;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-puffs{display:inline-block;margin-top:.15rem;
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(1.4rem,6.5vw,3rem);letter-spacing:4px;
+  background:linear-gradient(90deg,var(--gold),#ff9500);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeUp .7s .15s ease both;}
+.hero-price{display:inline-flex;align-items:center;gap:10px;
+  margin-top:.9rem;padding:9px 20px;
+  background:linear-gradient(135deg,rgba(255,215,0,.1),rgba(255,149,0,.07));
+  border:1px solid rgba(255,215,0,.3);border-radius:50px;animation:fadeUp .7s .22s ease both;}
+.price-n{font-size:1.4rem;font-weight:900;
+  background:linear-gradient(90deg,var(--gold),#ffa500);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px;}
+.price-l{font-size:.63rem;color:rgba(255,215,0,.55);font-weight:600;
+  letter-spacing:.5px;text-transform:uppercase;line-height:1.3;}
+.hero-btns{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;
+  margin-top:1.2rem;animation:fadeUp .7s .3s ease both;}
+.btn-p{padding:13px 28px;background:linear-gradient(135deg,var(--pink),var(--purple));
+  border:none;border-radius:50px;color:#fff;font-family:'Outfit',sans-serif;
+  font-weight:700;font-size:.88rem;cursor:pointer;
+  box-shadow:0 4px 28px rgba(255,45,120,.4);transition:all .25s;}
+.btn-p:active{transform:scale(.97);}
+.btn-g{padding:13px 28px;background:transparent;border:1px solid rgba(255,255,255,.25);
+  border-radius:50px;color:#fff;font-family:'Outfit',sans-serif;
+  font-weight:700;font-size:.88rem;cursor:pointer;transition:all .25s;}
+.btn-g:active{border-color:var(--cyan);color:var(--cyan);}
+.scroll-hint{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  opacity:.4;animation:fadeUp .7s .5s ease both;pointer-events:none;}
+.scroll-line{width:1px;height:34px;
+  background:linear-gradient(to bottom,transparent,rgba(255,255,255,.5));
+  animation:sLine 1.8s ease-in-out infinite;}
+@keyframes sLine{
+  0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}
+  51%{transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+.scroll-txt{font-size:.57rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.4);}
+
+/* MARQUEE */
+.marquee-wrap{position:relative;z-index:10;overflow:hidden;padding:13px 0;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  background:rgba(5,0,15,.75);}
+.marquee-inner{display:flex;animation:marq 22s linear infinite;width:max-content;}
+.m-item{display:flex;align-items:center;gap:13px;padding:0 13px;
+  font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,.2);white-space:nowrap;}
+.m-sep{width:3px;height:3px;border-radius:50%;background:var(--pink);flex-shrink:0;}
+@keyframes marq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* SECTIONS */
+.section{position:relative;z-index:10;padding:65px 4%;background:var(--bg);}
+.sec-label{font-size:.67rem;letter-spacing:4px;text-transform:uppercase;
+  color:var(--cyan);font-weight:600;margin-bottom:.55rem;
+  opacity:0;transform:translateY(13px);transition:all .5s;}
+.sec-title{font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.1rem,8.5vw,4rem);letter-spacing:-1px;line-height:.95;margin-bottom:1.8rem;
+  opacity:0;transform:translateY(13px);transition:all .5s .08s;}
+.sec-title span{background:linear-gradient(90deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.in-view .sec-label,.in-view .sec-title,
+.in-view .products-grid,.in-view .features-grid{opacity:1;transform:none;}
+
+/* PRODUCTS GRID */
+.products-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;
+  opacity:0;transform:translateY(16px);transition:all .5s .13s;}
+@media(min-width:540px){.products-grid{grid-template-columns:repeat(3,1fr);}}
+@media(min-width:860px){.products-grid{grid-template-columns:repeat(4,1fr);}}
+@media(min-width:1100px){.products-grid{grid-template-columns:repeat(5,1fr);}}
+
+.prod-card{background:var(--surface);border:1px solid var(--border);
+  border-radius:17px;padding:15px 11px;cursor:pointer;transition:all .25s;
+  position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;}
+.prod-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--ac,var(--cyan)),transparent);
+  transform:scaleX(0);transition:transform .4s;}
+@media(hover:hover){
+  .prod-card:hover{background:rgba(255,255,255,.07);transform:translateY(-5px);
+    box-shadow:0 16px 50px rgba(0,0,0,.4);}
+  .prod-card:hover::before{transform:scaleX(1);}
+  .prod-card:hover .mini-dev{transform:rotateY(18deg) translateY(-7px) scale(1.05);}}
+.prod-card:active{transform:scale(.97);background:rgba(255,255,255,.06);}
+
+/* mini 3D device in card */
+.mini-dev{width:58px;height:135px;position:relative;margin:0 auto 13px;
+  transform-style:preserve-3d;
+  animation:mFloat var(--fd,4s) ease-in-out infinite var(--fdd,0s);
+  transition:transform .35s;}
+@keyframes mFloat{
+  0%,100%{transform:translateY(0) rotateY(-4deg);}
+  50%{transform:translateY(-9px) rotateY(6deg);}}
+.mf{position:absolute;width:58px;height:135px;border-radius:11px;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding:7px 5px;border:1px solid rgba(255,255,255,.16);backface-visibility:hidden;}
+.ms{position:absolute;width:15px;height:135px;top:0;right:-14px;
+  border-radius:0 11px 11px 0;transform:rotateY(-90deg);transform-origin:left center;
+  filter:brightness(.5);backface-visibility:hidden;}
+.mn{position:absolute;top:-9px;left:50%;transform:translateX(-50%);
+  width:15px;height:11px;border-radius:4px 4px 2px 2px;z-index:2;}
+.ml{font-family:'Bebas Neue',sans-serif;font-size:.55rem;letter-spacing:2px;
+  color:rgba(255,255,255,.5);writing-mode:vertical-rl;text-orientation:mixed;
+  position:absolute;left:4px;top:50%;transform:translateY(-50%) rotate(180deg);}
+.mb{position:absolute;top:7px;right:5px;background:rgba(0,0,0,.5);
+  border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:1px 5px;
+  font-size:.38rem;font-weight:700;color:rgba(255,255,255,.8);}
+.mfn{font-size:.48rem;font-weight:700;text-align:center;color:#fff;
+  line-height:1.2;max-width:50px;}
+.mleds{display:flex;gap:2px;margin-top:3px;}
+.mled{width:4px;height:4px;border-radius:50%;animation:ledB 1.8s ease-in-out infinite;}
+.mled:nth-child(2){animation-delay:.3s;}
+.mled:nth-child(3){opacity:.25!important;}
+.msh{position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);
+  width:44px;height:9px;background:radial-gradient(ellipse,rgba(0,0,0,.5) 0%,transparent 70%);}
+.cnum{position:absolute;top:7px;left:9px;font-family:'Bebas Neue',sans-serif;
+  font-size:1.3rem;color:rgba(255,255,255,.055);line-height:1;}
+
+/* card text — unified single color */
+.ctitle{font-size:.72rem;font-weight:700;text-align:center;
+  margin-bottom:.25rem;line-height:1.25;color:rgba(255,255,255,.92);}
+.csub{font-size:.56rem;color:rgba(255,255,255,.38);text-align:center;
+  line-height:1.33;margin-bottom:.65rem;flex:1;}
+.cprice{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;
+  background:linear-gradient(90deg,var(--gold),#ff9500);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.cpsub{font-size:.53rem;color:rgba(255,255,255,.26);letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:8px;}
+.cbtn{width:100%;padding:9px;border:none;border-radius:50px;color:#fff;
+  font-family:'Outfit',sans-serif;font-weight:700;font-size:.7rem;cursor:pointer;transition:all .22s;}
+.cbtn:active{transform:scale(.97);}
+
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;
+  opacity:0;transform:translateY(16px);transition:all .5s .13s;}
+@media(min-width:680px){.features-grid{grid-template-columns:repeat(3,1fr);}}
+.fi{background:var(--surface);border:1px solid var(--border);
+  border-radius:17px;padding:20px 15px;transition:all .25s;}
+.fi:active{background:rgba(255,255,255,.06);}
+@media(hover:hover){.fi:hover{background:rgba(255,255,255,.06);transform:translateY(-3px);}}
+.fi-icon{font-size:1.7rem;margin-bottom:9px;}
+.fi h3{font-size:.88rem;font-weight:700;margin-bottom:4px;}
+.fi p{font-size:.73rem;color:rgba(255,255,255,.38);line-height:1.5;}
+
+/* STATS */
+.stats-row{display:flex;justify-content:space-around;flex-wrap:wrap;gap:18px;
+  padding:48px 5%;position:relative;z-index:10;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg);}
+.stat{text-align:center;min-width:75px;}
+.sn{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.9rem,7vw,3.2rem);
+  line-height:1;background:linear-gradient(135deg,#fff,rgba(255,255,255,.5));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sn span{background:linear-gradient(90deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sl{font-size:.62rem;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,.28);font-weight:600;margin-top:2px;}
+
+/* FOOTER */
+footer{position:relative;z-index:10;padding:48px 5% 28px;
+  border-top:1px solid var(--border);background:var(--bg);}
+.flogo{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:2px;
+  display:block;margin-bottom:5px;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.fdesc{font-size:.78rem;color:rgba(255,255,255,.28);line-height:1.6;margin-bottom:28px;}
+.fgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-bottom:28px;}
+@media(min-width:480px){.fgrid{grid-template-columns:repeat(3,1fr);}}
+.fcol h4{font-size:.63rem;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,255,255,.22);margin-bottom:11px;}
+.fcol ul{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.fcol a{font-size:.8rem;color:rgba(255,255,255,.42);text-decoration:none;transition:color .2s;}
+.fcol a:active{color:var(--cyan);}
+.fbot{text-align:center;padding-top:22px;border-top:1px solid var(--border);
+  font-size:.65rem;color:rgba(255,255,255,.16);line-height:1.6;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+<canvas id="heroCanvas"></canvas>
+<div class="grain"></div>
+
+<nav id="nav">
+  <div class="nav-logo">VapSolo</div>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#features">Why Us?</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-buy-d" onclick="goTo('products')">Shop →</button>
+  <button class="hamburger" id="hbg" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mMenu">
+  <a href="#hero" onclick="closeMenu()">Home</a>
+  <a href="#products" onclick="closeMenu()">Products</a>
+  <a href="#features" onclick="closeMenu()">Why Us?</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+</div>
+
+<section class="hero" id="hero">
+  <div class="hero-stage" id="heroStage"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow"><div class="pdot"></div>Quads 4in1 · Collection 2025</div>
+    <h1 class="hero-title"><span class="t1">PREMIUM</span><span class="t2">VAPING</span></h1>
+    <div class="hero-puffs">80 000 PUFFS</div>
+    <div class="hero-price">
+      <div class="price-l">Price / device</div>
+      <div class="price-n">$14.99</div>
+      <div class="price-l">Free shipping<br>on 2+ items</div>
+    </div>
+    <div class="hero-btns">
+      <button class="btn-p" onclick="goTo('products')">Explore Flavors</button>
+      <button class="btn-g" onclick="goTo('features')">Why VapSolo?</button>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <div class="scroll-txt">Scroll</div>
+  </div>
+</section>
+
+<div class="marquee-wrap"><div class="marquee-inner" id="mq"></div></div>
+
+<section class="section" id="products">
+  <div class="sec-label">All Products – 15 Flavors</div>
+  <h2 class="sec-title">Choose Your<br><span>Favorite Flavor</span></h2>
+  <div class="products-grid" id="pg"></div>
+</section>
+
+<section class="section" id="features">
+  <div class="sec-label">Technology</div>
+  <h2 class="sec-title">Why<br><span>VapSolo?</span></h2>
+  <div class="features-grid">
+    <div class="fi"><div class="fi-icon">⚡</div><h3>USB-C Fast Charging</h3><p>Fully charges in 45 minutes, never miss a single moment.</p></div>
+    <div class="fi"><div class="fi-icon">🎨</div><h3>4 Flavors · 1 Device</h3><p>Quads 4in1 technology – switch between four different flavors with a single device.</p></div>
+    <div class="fi"><div class="fi-icon">💎</div><h3>Premium Design</h3><p>Ergonomic shape, mirror finish, LED battery indicator.</p></div>
+    <div class="fi"><div class="fi-icon">🔋</div><h3>850mAh Battery</h3><p>High-capacity built-in battery for maximum performance.</p></div>
+    <div class="fi"><div class="fi-icon">🌊</div><h3>Mesh Coil Tech</h3><p>Even heat distribution, perfect flavor experience, dense clouds with every puff.</p></div>
+    <div class="fi"><div class="fi-icon">🚚</div><h3>Fast Shipping</h3><p>Free shipping on 2+ items, shipped same day, 1-2 business days.</p></div>
+  </div>
+</section>
+
+<div class="stats-row">
+  <div class="stat"><div class="sn"><span>80K</span></div><div class="sl">Puffs</div></div>
+  <div class="stat"><div class="sn"><span>15</span></div><div class="sl">Flavors</div></div>
+  <div class="stat"><div class="sn"><span>4in1</span></div><div class="sl">Quads Tech</div></div>
+  <div class="stat"><div class="sn">$14.99<span></span></div><div class="sl">/ device</div></div>
+</div>
+
+<footer id="contact">
+  <span class="flogo">VapSolo</span>
+  <p class="fdesc">Premium disposable vape devices – the best flavors, the best technology. For adults 18+ only.</p>
+  <div class="fgrid">
+    <div class="fcol"><h4>Products</h4><ul><li><a href="#">Quads 4in1</a></li><li><a href="#">All Flavors</a></li><li><a href="#">Promotions</a></li></ul></div>
+    <div class="fcol"><h4>Information</h4><ul><li><a href="#">Shipping</a></li><li><a href="#">Terms & Conditions</a></li><li><a href="#">Privacy Policy</a></li></ul></div>
+    <div class="fcol"><h4>Contact</h4><ul><li><a href="#">Instagram</a></li><li><a href="#">TikTok</a></li><li><a href="#">Email</a></li></ul></div>
+  </div>
+  <div class="fbot">© 2025 VapSolo · For adults 18+ only · Smoking causes serious health damage.</div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ══════════════════════════════════════════
+// PRODUCT DATA
+// ══════════════════════════════════════════
+const PRODUCTS = [
+  {id:1, name:'Lemon Lime & Watermelon Ice & Black Ice Dragon Fruit Strawberry & Love66',
+   c1:'#a3e635',c2:'#65a30d',side:'#4d7c0f',glow:'#a3e635',nozzle:'#d9f99d',led:'#a3e635',ac1:'#a3e635',ac2:'#16a34a'},
+  {id:2, name:'Vanilla Cola & Lemon Peach & Strawberry Raspberry Cherry Ice & Grape Ice',
+   c1:'#fb923c',c2:'#ea580c',side:'#c2410c',glow:'#fb923c',nozzle:'#fed7aa',led:'#fb923c',ac1:'#fb923c',ac2:'#ea580c'},
+  {id:3, name:'Grape Burst & Lychee Ice & Peach Berry & Kiwi Passion Fruit Guava',
+   c1:'#a855f7',c2:'#7c3aed',side:'#5b21b6',glow:'#a855f7',nozzle:'#e9d5ff',led:'#a855f7',ac1:'#a855f7',ac2:'#7c3aed'},
+  {id:4, name:'Watermelon Ice & Strawberry Mango & Blueberry Ice & Fizzy Cherry',
+   c1:'#f43f5e',c2:'#be123c',side:'#9f1239',glow:'#f43f5e',nozzle:'#fda4af',led:'#f43f5e',ac1:'#f43f5e',ac2:'#be123c'},
+  {id:5, name:'Strawberry Watermelon & Cherry Cola & Juicy Peach Ice & Grapefruit Refresher',
+   c1:'#ec4899',c2:'#9d174d',side:'#831843',glow:'#ec4899',nozzle:'#f9a8d4',led:'#ec4899',ac1:'#ec4899',ac2:'#9d174d'},
+  {id:6, name:'Lemon Lime & Strawberry Ice & Raspberry Watermelon & Fizzy Cherry',
+   c1:'#facc15',c2:'#ca8a04',side:'#a16207',glow:'#facc15',nozzle:'#fef08a',led:'#facc15',ac1:'#facc15',ac2:'#ca8a04'},
+  {id:7, name:'Lady Killer & Mojo & Special Premium Blend',
+   c1:'#06b6d4',c2:'#0e7490',side:'#155e75',glow:'#06b6d4',nozzle:'#a5f3fc',led:'#06b6d4',ac1:'#06b6d4',ac2:'#0e7490'},
+  {id:8, name:'Strawberry Mango & Blue Razz Lemonade & Vanilla Ice Cream & Sour Triple Berry',
+   c1:'#3b82f6',c2:'#1d4ed8',side:'#1e40af',glow:'#3b82f6',nozzle:'#bfdbfe',led:'#3b82f6',ac1:'#3b82f6',ac2:'#1d4ed8'},
+  {id:9, name:'Mixed Berry & Cherry Lemon & Strawberry Kiwi & Watermelon Bubblegum',
+   c1:'#8b5cf6',c2:'#6d28d9',side:'#4c1d95',glow:'#8b5cf6',nozzle:'#ddd6fe',led:'#8b5cf6',ac1:'#8b5cf6',ac2:'#6d28d9'},
+  {id:10,name:'Mojito & Monster Mango & Lady Killer & Pink Lemonade',
+   c1:'#10b981',c2:'#047857',side:'#065f46',glow:'#10b981',nozzle:'#a7f3d0',led:'#10b981',ac1:'#10b981',ac2:'#047857'},
+  {id:11,name:'Happy Ranch & Sex on the Beach & Watermelon Coconut & Cherry Berry',
+   c1:'#f97316',c2:'#c2410c',side:'#9a3412',glow:'#f97316',nozzle:'#fed7aa',led:'#f97316',ac1:'#f97316',ac2:'#c2410c'},
+  {id:12,name:'Blueberry Currant & Cheese Cake & Blackberry Red Raspberry & Lime Passion Fruit',
+   c1:'#6366f1',c2:'#4338ca',side:'#3730a3',glow:'#6366f1',nozzle:'#c7d2fe',led:'#6366f1',ac1:'#6366f1',ac2:'#4338ca'},
+  {id:13,name:'Apple Power & Aloe & Premium Fresh Blend',
+   c1:'#84cc16',c2:'#4d7c0f',side:'#365314',glow:'#84cc16',nozzle:'#d9f99d',led:'#84cc16',ac1:'#84cc16',ac2:'#4d7c0f'},
+  {id:14,name:'Mango Pineapple & Blue Razz Cherry & Watermelon Cherry & Blackberry Mint',
+   c1:'#fbbf24',c2:'#b45309',side:'#92400e',glow:'#fbbf24',nozzle:'#fde68a',led:'#fbbf24',ac1:'#fbbf24',ac2:'#b45309'},
+  {id:15,name:'Mixed Berry & Strawberry Mango & Green Grape Grapefruit & Greentea Peach Iced Tea',
+   c1:'#2dd4bf',c2:'#0d9488',side:'#0f766e',glow:'#2dd4bf',nozzle:'#99f6e4',led:'#2dd4bf',ac1:'#2dd4bf',ac2:'#0d9488'},
+];
+
+// ══════════════════════════════════════════
+// THREE.JS — PROCEDURAL NEBULA SHADER BG
+// ══════════════════════════════════════════
+(function(){
+  const canvas = document.getElementById('heroCanvas');
+  const renderer = new THREE.WebGLRenderer({canvas,alpha:false,antialias:false,powerPreference:'low-power'});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,1.5));
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+
+  function resize(){renderer.setSize(window.innerWidth,window.innerHeight);}
+  window.addEventListener('resize',resize,{passive:true});
+  resize();
+
+  const mat = new THREE.ShaderMaterial({
+    uniforms:{uTime:{value:0},uScroll:{value:0},uMouse:{value:new THREE.Vector2(0,0)},
+      uRes:{value:new THREE.Vector2(window.innerWidth,window.innerHeight)}},
+    vertexShader:`varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position,1.);}`,
+    fragmentShader:`
+      uniform float uTime,uScroll;
+      uniform vec2 uMouse,uRes;
+      varying vec2 vUv;
+
+      float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+      float noise(vec2 p){
+        vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+        return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),
+                   mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
+      float fbm(vec2 p){float v=0.,a=.5;
+        for(int i=0;i<6;i++){v+=a*noise(p);p*=2.1;a*=.5;}return v;}
+
+      void main(){
+        vec2 uv=vUv;
+        vec2 asp=(uv-.5)*vec2(uRes.x/uRes.y,1.);
+        float t=uTime*.15;
+        vec2 m=uMouse*.04;
+
+        /* layered fbm noise for nebula clouds */
+        float n1=fbm(asp*1.6+vec2(t*.5,t*.3)+m);
+        float n2=fbm(asp*2.5-vec2(t*.35,t*.55)+m*.7+n1*.35);
+        float n3=fbm(asp*4.0+vec2(t*.7,-t*.4)+n2*.28);
+        float n4=fbm(asp*6.5+vec2(-t*.4,t*.6)+n3*.2);
+
+        /* base deep space */
+        vec3 col=vec3(0.02,0.0,0.07);
+
+        /* purple cloud layer */
+        col=mix(col,vec3(0.22,0.02,0.55),smoothstep(.25,.75,n1)*.8);
+        /* teal/cyan rim */
+        col=mix(col,vec3(0.0,0.48,0.78),smoothstep(.45,.85,n2)*.55);
+        /* hot pink highlight */
+        col=mix(col,vec3(0.85,0.08,0.45),smoothstep(.6,.92,n3)*.38);
+        /* blue deep */
+        col=mix(col,vec3(0.04,0.08,0.45),smoothstep(.5,.8,n4)*.3);
+
+        /* bright nebula core – upper center */
+        float core=1.-length(asp-vec2(m.x*.5,.18))*1.5;
+        col+=vec3(0.35,0.05,0.75)*max(0.,core)*.7;
+        col+=vec3(0.0,0.65,0.9)*max(0.,core-.25)*.35;
+        /* secondary glow bottom-left */
+        float g2=1.-length(asp-vec2(-.35,-.2))*2.2;
+        col+=vec3(0.8,0.1,0.45)*max(0.,g2)*.25;
+        /* gold accent top-right */
+        float g3=1.-length(asp-vec2(.4,.3))*2.8;
+        col+=vec3(0.9,0.6,0.05)*max(0.,g3)*.18;
+
+        /* stars */
+        vec2 sg=floor(asp*200.);
+        float star=step(.996,hash(sg));
+        float twinkle=sin(uTime*3.+hash(sg)*50.)*.5+.5;
+        col+=vec3(star*twinkle*.9);
+
+        /* vignette */
+        float vig=1.-dot(asp,asp)*.7;
+        col*=clamp(vig,0.,1.);
+
+        /* scroll fade */
+        float fade=clamp(uScroll*2.2,0.,1.);
+        col=mix(col,vec3(0.02,0.,0.06),fade);
+
+        /* filmic tone */
+        col=col/(col+vec3(.45));
+        col=pow(col,vec3(.88));
+
+        gl_FragColor=vec4(col,1.);}
+    `
+  });
+  window.addEventListener('resize',()=>{mat.uniforms.uRes.value.set(window.innerWidth,window.innerHeight);});
+
+  scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),mat));
+
+  let scrollP=0,tP=0;
+  window.addEventListener('scroll',()=>{
+    const h=document.getElementById('hero').offsetHeight;
+    tP=Math.min(window.scrollY/h,1);
+    canvas.style.opacity=Math.max(0,1-tP*1.7);
+  },{passive:true});
+
+  let mx=0,my=0;
+  window.addEventListener('mousemove',e=>{mx=(e.clientX/window.innerWidth-.5)*2;my=-(e.clientY/window.innerHeight-.5)*2;});
+  window.addEventListener('deviceorientation',e=>{mx=(e.gamma||0)/30;my=-((e.beta||0)-40)/30;},{passive:true});
+
+  let t=0;
+  (function loop(){
+    requestAnimationFrame(loop);
+    t+=.016;scrollP+=(tP-scrollP)*.07;
+    mat.uniforms.uTime.value=t;
+    mat.uniforms.uScroll.value=scrollP;
+    mat.uniforms.uMouse.value.set(mx,my);
+    renderer.render(scene,camera);
+  })();
+})();
+
+// ══════════════════════════════════════════
+// HERO CSS-3D FLOATING DEVICES
+// ══════════════════════════════════════════
+const stage=document.getElementById('heroStage');
+const isMobile=window.innerWidth<600;
+
+// 5 hero devices (3 on mobile) — spread across stage
+const heroSlots=isMobile
+  ?[{pi:3,x:-32,y:8,W:66,H:160,fd:4.2,fdd:0,base:'rotateY(-8deg) rotateX(2deg)'},
+    {pi:7,x:0, y:-6,W:80,H:194,fd:4.8,fdd:.22,base:'rotateY(0deg) rotateX(1deg)'},
+    {pi:11,x:32,y:10,W:62,H:150,fd:4.0,fdd:.55,base:'rotateY(8deg) rotateX(2deg)'}]
+  :[{pi:3,  x:-42,y:6, W:80,H:195,fd:4.2,fdd:0,  base:'rotateY(-12deg) rotateX(3deg)'},
+    {pi:6,  x:-20,y:2, W:70,H:172,fd:3.8,fdd:.5, base:'rotateY(5deg) rotateX(2deg)'},
+    {pi:7,  x:0,  y:-5,W:90,H:218,fd:4.7,fdd:.2, base:'rotateY(0deg) rotateX(1deg)'},
+    {pi:11, x:20, y:3, W:70,H:172,fd:4.0,fdd:.7, base:'rotateY(-5deg) rotateX(2deg)'},
+    {pi:14, x:42, y:8, W:76,H:185,fd:4.4,fdd:.38,base:'rotateY(12deg) rotateX(3deg)'}];
+
+heroSlots.forEach(cfg=>{
+  const p=PRODUCTS[cfg.pi];
+  const W=cfg.W,H=cfg.H,D=Math.round(W*.24);
+
+  const wrap=document.createElement('div');
+  wrap.className='hd-wrap';
+  wrap.style.cssText=`left:calc(50% + ${cfg.x}% - ${W/2}px);top:calc(48% - ${H/2}px);
+    --hfd:${cfg.fd}s;--hfdd:${cfg.fdd}s;--hbase:${cfg.base};--sc:${p.glow}55;`;
+
+  // ground shadow
+  const sh=document.createElement('div');
+  sh.className='h-shadow';
+  sh.style.cssText=`width:${W}px;height:22px;bottom:-10px;left:0;`;
+  wrap.appendChild(sh);
+
+  const dev=document.createElement('div');
+  dev.className='hd';
+  dev.style.cssText=`width:${W}px;height:${H}px;transform-style:preserve-3d;`;
+
+  // top cap
+  const top=document.createElement('div');
+  top.className='hf hf-top';
+  top.style.cssText=`width:${W}px;height:${D}px;top:-${D-1}px;left:0;
+    background:linear-gradient(${p.nozzle},${p.c1});
+    transform-origin:bottom center;transform:rotateX(90deg);border-radius:15px 15px 0 0;`;
+  dev.appendChild(top);
+
+  // front face
+  const front=document.createElement('div');
+  front.className='hf hf-front';
+  front.style.cssText=`width:${W}px;height:${H}px;top:0;left:0;
+    background:linear-gradient(165deg,${p.c1} 0%,${p.c2} 100%);
+    box-shadow:0 0 55px ${p.glow}55,inset 0 1px 0 rgba(255,255,255,.28);
+    transform:translateZ(0);`;
+  front.innerHTML=`
+    <div class="h-nozzle" style="background:${p.nozzle};box-shadow:0 0 14px ${p.glow}dd;"></div>
+    <div class="h-badge">4in1</div>
+    <div class="h-logo">VapSolo®</div>
+    <div class="h-flavor">${p.name.split(' & ')[0]}</div>
+    <div class="h-leds">
+      <div class="h-led" style="background:${p.led};box-shadow:0 0 5px ${p.led};"></div>
+      <div class="h-led" style="background:${p.led};box-shadow:0 0 5px ${p.led};"></div>
+      <div class="h-led" style="background:${p.led};"></div>
+    </div>`;
+  dev.appendChild(front);
+
+  // right side face
+  const side=document.createElement('div');
+  side.className='hf hf-side';
+  side.style.cssText=`width:${D}px;height:${H}px;top:0;left:${W-1}px;
+    background:${p.side};
+    transform-origin:left center;transform:rotateY(90deg);`;
+  dev.appendChild(side);
+
+  wrap.appendChild(dev);
+  wrap.addEventListener('click',()=>goTo('products'));
+  stage.appendChild(wrap);
+});
+
+// scroll: fade + lift stage
+window.addEventListener('scroll',()=>{
+  const p=Math.min(window.scrollY/window.innerHeight,1);
+  stage.style.opacity=Math.max(0,1-p*2.8);
+  stage.style.transform=`translateY(${-p*70}px)`;
+},{passive:true});
+
+// parallax tilt
+let pmx=0,pmy=0;
+window.addEventListener('mousemove',e=>{pmx=(e.clientX/window.innerWidth-.5)*2;pmy=-(e.clientY/window.innerHeight-.5)*2;});
+window.addEventListener('deviceorientation',e=>{pmx=(e.gamma||0)/22;pmy=-((e.beta||0)-40)/22;},{passive:true});
+(function tiltLoop(){
+  requestAnimationFrame(tiltLoop);
+  document.querySelectorAll('.hd-wrap').forEach((w,i)=>{
+    const f=0.35+(i*.12);
+    w.style.marginLeft=`${pmx*f*7}px`;
+    w.style.marginTop=`${pmy*f*3.5}px`;
+  });
+})();
+
+// ══════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>55);
+},{passive:true});
+
+// ══════════════════════════════════════════
+// MARQUEE
+// ══════════════════════════════════════════
+const mqEl=document.getElementById('mq');
+['Watermelon Ice','Strawberry Mango','Pink Lemonade','Lemon Lime','Blue Razz',
+ 'Grape Burst','Lychee Ice','Mojito','Mango Ice','Cherry Cola',
+ 'Peach Berry','Fizzy Cherry','Mixed Berry','Passion Fruit','Blueberry',
+ 'Watermelon Ice','Strawberry Mango','Pink Lemonade','Lemon Lime','Blue Razz',
+ 'Grape Burst','Lychee Ice','Mojito','Mango Ice','Cherry Cola',
+ 'Peach Berry','Fizzy Cherry','Mixed Berry','Passion Fruit','Blueberry']
+.forEach(f=>{
+  const d=document.createElement('div');d.className='m-item';
+  d.innerHTML=`${f}<div class="m-sep"></div>`;
+  mqEl.appendChild(d);
+});
+
+// ══════════════════════════════════════════
+// PRODUCTS GRID
+// ══════════════════════════════════════════
+const grid=document.getElementById('pg');
+PRODUCTS.forEach((p,i)=>{
+  const fd=3.5+(i%5)*.42,fdd=(i%6)*.2;
+  const card=document.createElement('div');
+  card.className='prod-card';
+  card.style.setProperty('--ac',p.ac1);
+  card.innerHTML=`
+    <div class="cnum">${String(i+1).padStart(2,'0')}</div>
+    <div class="mini-dev" style="--fd:${fd}s;--fdd:${fdd}s;">
+      <div class="mf" style="background:linear-gradient(165deg,${p.c1},${p.c2});box-shadow:0 0 22px ${p.glow}40;">
+        <div class="mn" style="background:${p.nozzle};box-shadow:0 0 8px ${p.glow}cc;"></div>
+        <div class="ml">VapSolo®</div>
+        <div class="mb">4in1</div>
+        <div class="mfn">${p.name.split(' & ')[0]}</div>
+        <div class="mleds">
+          <div class="mled" style="background:${p.led};box-shadow:0 0 3px ${p.led};"></div>
+          <div class="mled" style="background:${p.led};box-shadow:0 0 3px ${p.led};"></div>
+          <div class="mled" style="background:${p.led};"></div>
+        </div>
+      </div>
+      <div class="ms" style="background:${p.side};"></div>
+      <div class="msh"></div>
+    </div>
+    <div class="ctitle">${p.name}</div>
+    <div class="cprice">$14.99</div>
+    <div class="cpsub">80 000 puffs · 4in1</div>
+    <button class="cbtn" style="background:linear-gradient(135deg,${p.ac1},${p.ac2});">Add to Cart →</button>
+  `;
+  grid.appendChild(card);
+});
+
+// ══════════════════════════════════════════
+// SCROLL REVEAL
+// ══════════════════════════════════════════
+const revObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in-view');});
+},{threshold:.07});
+document.querySelectorAll('.section').forEach(s=>revObs.observe(s));
+
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+function goTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+function toggleMenu(){
+  document.getElementById('mMenu').classList.toggle('open');
+  document.getElementById('hbg').classList.toggle('open');}
+function closeMenu(){
+  document.getElementById('mMenu').classList.remove('open');
+  document.getElementById('hbg').classList.remove('open');}
+</script>
+</body>
+</html>
